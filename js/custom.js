@@ -1,104 +1,108 @@
-jQuery(document).ready(function($) {
+// Custom Script
+// Developed by: Samson.Onna
+var customScripts = {
+    profile: function () {
+        // portfolio
+        if ($('.isotopeWrapper').length) {
+            var $container = $('.isotopeWrapper');
+            var $resize = $('.isotopeWrapper').attr('id');
+            // initialize isotope
+            $container.isotope({
+                itemSelector: '.isotopeItem',
+                resizable: false, // disable normal resizing
+                masonry: {
+                    columnWidth: $container.width() / $resize
+                }
+            });
+            $("a[href='#top']").click(function () {
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                return false;
+            });
+            $('.navbar-inverse').on('click', 'li a', function () {
+                $('.navbar-inverse .in').addClass('collapse').removeClass('in').css('height', '1px');
+            });
+            $('#filter a').click(function () {
+                $('#filter a').removeClass('current');
+                $(this).addClass('current');
+                var selector = $(this).attr('data-filter');
+                $container.isotope({
+                    filter: selector,
+                    animationOptions: {
+                        duration: 1000,
+                        easing: 'easeOutQuart',
+                        queue: false
+                    }
+                });
+                return false;
+            });
+            $(window).smartresize(function () {
+                $container.isotope({
+                    // update columnWidth to a percentage of container width
+                    masonry: {
+                        columnWidth: $container.width() / $resize
+                    }
+                });
+            });
+        }
+    },
+    fancybox: function () {
+        // fancybox
+        $(".fancybox").fancybox();
+    },
+    onePageNav: function () {
 
-
-/********** jQuery Isotope Filterable Portfolio  **********/
-
-var $container = $('#gallery');
-
-if($container.length ) {
-	$container.isotope({
-	  itemSelector : '.view',
-	  layoutMode : 'fitRows'
-	});
+        $('#mainNav').onePageNav({
+            currentClass: 'active',
+            changeHash: false,
+            scrollSpeed: 950,
+            scrollThreshold: 0.2,
+            filter: '',
+            easing: 'swing',
+            begin: function () {
+                //I get fired when the animation is starting
+            },
+            end: function () {
+                //I get fired when the animation is ending
+            },
+            scrollChange: function ($currentListItem) {
+                //I get fired when you enter a section and I pass the list item of the section
+            }
+        });
+    },
+    slider: function () {
+        $('#da-slider').cslider({
+            autoplay: true,
+            bgincrement: 0
+        });
+    },
+    owlSlider: function () {
+        var owl = $("#owl-demo");
+        owl.owlCarousel();
+        // Custom Navigation Events
+        $(".next").click(function () {
+            owl.trigger('owl.next');
+        })
+        $(".prev").click(function () {
+            owl.trigger('owl.prev');
+        })
+    },
+    bannerHeight: function () {
+        var bHeight = $(".banner-container").height();
+        $('#da-slider').height(bHeight);
+        $(window).resize(function () {
+            var bHeight = $(".banner-container").height();
+            $('#da-slider').height(bHeight);
+        });
+    },
+    init: function () {
+        customScripts.onePageNav();
+        customScripts.profile();
+        customScripts.fancybox();
+        customScripts.slider();
+        customScripts.owlSlider();
+        customScripts.bannerHeight();
+    }
 }
-
-var $optionSets = $('ul.filterable'),
-$optionLinks = $optionSets.find('a');
-
-$optionLinks.click(function(){
-	var $this = $(this);
-	// don't proceed if already selected
-	if ( $this.hasClass('active') ) {
-	return false;
-	}
-	var $optionSet = $this.parents('.filterable');
-	$optionSet.find('li.active').removeClass('active');
-	$this.parents('li').addClass('active');
-
-	// make option object dynamically, i.e. { filter: '.my-filter-class' }
-	var options = {},
-	key = $optionSet.attr('data-option-key'),
-	value = $this.attr('data-option-value');
-	// parse 'false' as false boolean
-	value = value === 'false' ? false : value;
-	options[ key ] = value;
-	if ( key === 'layoutMode' && typeof changeLayoutMode === 'function' ) {
-		// changes in layout modes need extra logic
-		changeLayoutMode( $this, options )
-	} else {
-		// otherwise, apply new options
-		$container.isotope( options );
-	}
-	return false;
+$('document').ready(function () {
+    customScripts.init();
 });
-
-/********** jQuery Isotope Filterable Portfolio  **********/
-
-
-
-
-/********** Prettyphoto Lightbox **********/	
-	function buildPrettyPhoto() {
-        jQuery("a[data-rel^='prettyPhoto'], a.prettyPhoto, a[rel^='prettyPhoto']").prettyPhoto({
-			overlay_gallery: false
-		});
-	}
-	buildPrettyPhoto();
-/********** Prettyphoto Lightbox **********/
-
-
-
-/********** Mobile Menu **********/	
-
-	mainNavMenu(jQuery("#top-menu") , 0);
-	function mainNavMenu(parent , level){
-		jQuery(parent).children("li").each(function(i , obj){
-			var label = "";
-			for(var k = 0 ; k < level ; k++){
-				label += "&nbsp;&nbsp;&nbsp;&nbsp;";
-			}
-			label += jQuery(obj).children("a").text();
-			jQuery("#responsive-top-menu").append("<option value = '" + jQuery(obj).children("a").attr("href") + "'>" + label + "</option>");
-			
-			if(jQuery(obj).children("ul").size() == 1){
-				mainNavChildren(jQuery(obj).children("ul") , level + 1);
-			}
-		});
-	}
-
-	jQuery('#menu-button').live('click', function() {
-		jQuery('#top-menu ul').toggle();
-		return false;
-	})
-
-	/*WIDTH RESIZE*/	
-	var currentWindowWidth = jQuery(window).width();
-	jQuery(window).resize(function(){
-		currentWindowWidth = jQuery(window).width();
-		if(currentWindowWidth > 480) {jQuery('#top-menu ul').show()}  else {jQuery('#top-menu ul').hide() }
-	});
-
-
-	/*WIDTH RESIZE*/
-
-/********** Mobile Menu **********/
-
-
-
-
-});
-
-
-
-
-
